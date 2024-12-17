@@ -9,6 +9,6 @@
 <body>
 	
 	<a href="/WordQuiz3/quiz.nhn?action=mainPage"> 메인페이지 </a>
-	
+	<h2>22</h2>
 </body>
 </html>
