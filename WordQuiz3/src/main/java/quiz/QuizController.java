@@ -13,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/quiz.nhn")
 public class QuizController extends HttpServlet {
@@ -20,6 +21,7 @@ public class QuizController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ChatBotService chatBotService;
 	private QuizService quizService;
+	private GameLogService gameLogService;
 	private ServletContext ctx;
 
 	// 웹 리소스 기본 경로 지정
@@ -31,6 +33,7 @@ public class QuizController extends HttpServlet {
 		ctx = getServletContext();
 		chatBotService = new ChatBotService();
 		quizService = new QuizService();
+		gameLogService = new GameLogService();
 		
 	}
 
@@ -140,6 +143,12 @@ public class QuizController extends HttpServlet {
 		request.setAttribute("quizList", list);
 		request.setAttribute("quizFlagList", flagList);
 		request.setAttribute("correctCnt", correctCnt);
+		
+		HttpSession session = request.getSession();
+		int userNo = Integer.parseInt(session.getAttribute("userNo").toString()) ;
+		gameLogService.saveGameLog(userNo, correctCnt);
+		
+		System.out.println(userNo);
 		
 		return "quiz/commentaryView.jsp";
 	}

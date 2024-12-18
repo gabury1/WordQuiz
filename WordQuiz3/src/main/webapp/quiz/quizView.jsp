@@ -40,6 +40,12 @@
 
 </head>
 <body>
+
+	<% 
+		Integer userNo = 1;
+		session.setAttribute("userNo", userNo);
+	%>
+
 	<div>
 		<h1 id="count">(타임 카운터)5</h1>
 		<h1 id="round">(라운드)3</h1>
