@@ -1,0 +1,6 @@
+INDEX VERSION 1.4+C:\Users\dnwls\Documents\wordquiz2\WordQuiz3\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+1433112833.index
+3606406456.index
+3475605593.index
+3691394650.index
+4044542482.index
