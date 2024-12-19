@@ -29,7 +29,7 @@ public class GameLogDao
 	public void saveLog(int score, int playerNo)
 	{
 		var conn = open();
-				
+		
 		try {
 				String insertSQL = "INSERT INTO Game_logs (score, player_no) VALUES (?, ?);";
 				System.out.println(insertSQL);
