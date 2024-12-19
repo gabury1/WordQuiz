@@ -10,9 +10,18 @@
 	
 	<a href="/WordQuiz3/quiz.nhn?action=mainPage"> 메인페이지 </a>
 	<h1> 로그인 페이지 입니다. </h1>
-	<h2> 로그인 시 세션에 유저 정보가 들어가야하고, 로그인 상태의 유저가 로그인페이지에 진입 시, 메인 페이지로 리다이렉트 되어야 합니다. </h2>
-	<a href="/WordQuiz3/quiz.nhn?action=loginPage"> 로그인 </a>
-	<a href="/WordQuiz3/quiz.nhn?action=registerPage"> 회원가입 </a>
+	<h1>로그인 페이지</h1>
+    <form action="/WordQuiz3/quiz.nhn?action=login" method="post">
+        <label for="id">아이디:</label>
+        <input type="text" id="id" name="id" required><br>
+        <label for="password">비밀번호:</label>
+        <input type="password" id="password" name="password" required><br>
+        <button type="submit">로그인</button>
+    </form>
+    <c:if test="${not empty error}">
+        <p style="color: red">${error}</p>
+    </c:if>
+    <a href="/WordQuiz3/quiz.nhn?action=registerPage">회원가입</a>
 	
 </body>
 </html>

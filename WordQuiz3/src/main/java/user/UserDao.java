@@ -43,31 +43,7 @@ public class UserDao {
 		}
 	}
 	
-	//우진 만든거
-	public void insertUser(UserDto user) throws Exception {
-	    String sql = "INSERT INTO member (id, password, nickname, age) VALUES (?, ?, ?, ?)";
-	    System.out.println("[DEBUG] SQL 준비: " + sql);
-	    
-	    try (Connection conn = open(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-	        System.out.println("[DEBUG] DB 연결 성공");	        
-	        System.out.println("[DEBUG] 입력값 확인: " + user.getId() + ", " + user.getPassword() + ", " + user.getNickname() + ", " + user.getAge());
-	        pstmt.setString(1, user.getId());
-	        pstmt.setString(2, user.getPassword());
-	        pstmt.setString(3, user.getNickname());
-	        pstmt.setInt(4, user.getAge());
-	        
-	        int result = pstmt.executeUpdate();
-	        System.out.println("[DEBUG] SQL 실행 완료, 반영된 행 수: " + result);
-	    } catch (Exception e) {
-	        System.out.println("[ERROR] SQL 실행 중 오류 발생");
-	        e.printStackTrace();
-	        throw e; // 상위 메서드에 예외 전달
-	    }
-	}
-//우진 만든거
-	
-	
-	
+
 	public void delUser(int user_no)throws SQLException { // 유저 삭제
 		Connection conn = open();
 
@@ -94,5 +70,54 @@ public class UserDao {
 			pstmt.executeUpdate();
 		}
 	}
+	
+	//우진 만든거
+	public void insertUser(UserDto user) throws Exception {
+		String sql = "INSERT INTO Users (id, password, nickname, age) VALUES (?, ?, ?, ?)";
+	    System.out.println("[DEBUG] SQL 준비: " + sql);
+	    
+	    try (Connection conn = open(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        System.out.println("[DEBUG] DB 연결 성공");
+	        
+	        System.out.println("[DEBUG] 입력값 확인: " + user.getId() + ", " + user.getPassword() + ", " + user.getNickname() + ", " + user.getAge());
+	        pstmt.setString(1, user.getId());
+	        pstmt.setString(2, user.getPassword());
+	        pstmt.setString(3, user.getNickname());
+	        pstmt.setInt(4, user.getAge());
+	        
+	        int result = pstmt.executeUpdate();
+	        System.out.println("[DEBUG] SQL 실행 완료, 반영된 행 수: " + result);
+	    } catch (Exception e) {
+	        System.out.println("[ERROR] SQL 실행 중 오류 발생");
+	        e.printStackTrace();
+	        throw e; // 상위 메서드에 예외 전달
+	    }
+	}
+	
+	//우진 만든거
+	public UserDto validateUser(String id, String password) throws SQLException {
+	    String sql = "SELECT * FROM Users WHERE id = ? AND password = ?";
+	    try (Connection conn = open(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setString(1, id);
+	        pstmt.setString(2, password);
+
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            if (rs.next()) { // 일치하는 사용자 정보가 있으면 UserDto 객체에 저장
+	                UserDto user = new UserDto();
+	                user.setUser_no(rs.getInt("user_no"));
+	                user.setId(rs.getString("id"));
+	                user.setPassword(rs.getString("password")); // 비밀번호 반환 주의 (보안 이슈)
+	                user.setNickname(rs.getString("nickname"));
+	                user.setAge(rs.getInt("age"));
+	                user.setImg(rs.getString("img"));
+	                user.setContent(rs.getString("content"));
+	                user.setCreate_at(rs.getString("created_at"));
+	                return user;
+	            }
+	        }
+	    }
+	    return null; // 일치하는 사용자가 없으면 null 반환
+	}
+
 
 }
