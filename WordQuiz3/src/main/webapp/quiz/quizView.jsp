@@ -7,77 +7,52 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 
-<style>
-	body {margin : 0;}
-	#loading {
-            z-index: 1000; /* 다른 요소들 위로 쌓임 */
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column; /* flex 방향을 세로로 설정 */
-            font-size: 30px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-			background-color: #1E1E20; /* 반투명 검은색 배경 */
-			animation: fadeOut 5s 2s forwards; /* fadeOut 애니메이션 2초 동안 실*/
-	}
-	
-	@keyframes fadeOut {
-            from {
-                opacity: 1; /* 초기 투명도 */
-            }
-            to {
-                opacity: 0; /* 최종 투명도 */
-            }
-        }
-        
-</style>
-
+<!--  css  -->
+<link rel="stylesheet" href="static/css/basic.css">
+<link rel="stylesheet" href="static/css/quizPage.css">
 
 </head>
 <body>
 
-	<% 
-		Integer userNo = 1;
-		session.setAttribute("userNo", userNo);
+	<%
+	Integer userNo = 1;
+	session.setAttribute("userNo", userNo);
 	%>
 
-	<div>
+	<div id="gameDiv">
 		<h1 id="count">(타임 카운터)5</h1>
-		<h1 id="round">(라운드)3</h1>
-		<h1 id="solved">(맞춘 문제)2</h1>
-		<H1 id="word">Q. ~</H1>
-		<li>
-			<ol>
-				<button id="btnFirst" onClick="solve(0)">1</button>
-			</ol>
-			<ol>
-				<button id="btnSecond" onClick="solve(1)">2</button>
-			</ol>
-			<ol>
-				<button id="btnThird" onClick="solve(2)">3</button>
-			</ol>
-			<ol>
-				<button id="btnForth" onClick="solve(3)">4</button>
-			</ol>
-		</li>
+		<h1 id="round" class="hidden">(라운드)3</h1>
+		<h1 id="solved" class="hidden">(맞춘 문제)2</h1>
+		<div id="quizBox">
+
+			<H1 id="word">Q. ~</H1>
+			<li>
+				<ol>
+					<button id="btnFirst" onClick="solve(0)">1</button>
+				</ol>
+				<ol>
+					<button id="btnSecond" onClick="solve(1)">2</button>
+				</ol>
+				<ol>
+					<button id="btnThird" onClick="solve(2)">3</button>
+				</ol>
+				<ol>
+					<button id="btnForth" onClick="solve(3)">4</button>
+				</ol>
+			</li>
+		</div>
 	</div>
-	
-	<div id="loading">
-		<img src="image/block_loading.gif">
-		로딩중입니다 . . .
+	<!-- 
+	<div id="loading" >
+		<img src="image/block_loading.gif"> now Loading . . .
 	</div>
-	
+	 -->
 	<!-- 문제 리스트를 넘기기 위한 폼, 보이지 않음. 디자인에 반영 X -->
 	<form id="submitForm"
 		action="/WordQuiz3/quiz.nhn?action=commentaryPage" method="POST"
-		style="display : none;">
-		<input name="quizIdList" id="quizList" value=""> 
-		<input name="quizFlagList" id="quizFlagList" value="">
+		style="display: none;">
+		<input name="quizIdList" id="quizList" value=""> <input
+			name="quizFlagList" id="quizFlagList" value="">
 	</form>
 
 	<script>
@@ -106,13 +81,14 @@
 		var time = 5;			// 타이머 전역변수
 
 		
-		setTimeout(() =>{
+		setTimeout(() => {
 			alert("게임을 시작합니다.");
 			init(); 				// quizList에 데이터 담기.
 			refresh(0);				// 화면 최초 구성.
 		}, 8000);
 		
-
+		
+		//refresh(0);
 	
 		function refresh(num) 	// 원하는 번호의 문제로 이동.
 		{
@@ -212,7 +188,6 @@
 			
 		}
 
-		
 	</script>
 
 </body>
