@@ -11,6 +11,21 @@
 <link rel="stylesheet" href="static/css/basic.css">
 <link rel="stylesheet" href="static/css/quizPage.css">
 
+<style>
+	
+	img.infinite_rotating_logo{
+    animation: rotate_image 10s linear infinite;
+    transform-origin: 50% 50%;
+	}
+ 
+	@keyframes rotate_image{
+		100% {
+    	transform: rotate(360deg);
+    	}
+	}
+
+</style>
+
 </head>
 <body>
 
@@ -19,40 +34,58 @@
 	session.setAttribute("userNo", userNo);
 	%>
 
-	<div id="gameDiv">
-		<h1 id="count">(타임 카운터)5</h1>
-		<h1 id="round" class="hidden">(라운드)3</h1>
-		<h1 id="solved" class="hidden">(맞춘 문제)2</h1>
-		<div id="quizBox">
+	<h1 id="count" class="hidden">(타임 카운터)5</h1>
+	<h1 id="round" class="hidden">(라운드)3</h1>
+	<h1 id="solved" class="hidden">(맞춘 문제)2</h1>
 
-			<H1 id="word">Q. ~</H1>
-			<li>
-				<ol>
-					<button id="btnFirst" onClick="solve(0)">1</button>
-				</ol>
-				<ol>
-					<button id="btnSecond" onClick="solve(1)">2</button>
-				</ol>
-				<ol>
-					<button id="btnThird" onClick="solve(2)">3</button>
-				</ol>
-				<ol>
-					<button id="btnForth" onClick="solve(3)">4</button>
-				</ol>
-			</li>
+	<div class="game-container">
+	
+		<div class="timer">
+			<img class="timer-img" src="static/image/Group.png">
+			<div class="progress-bar"></div>
 		</div>
+		
+		<div class="thumbys"> 
+			<img class="thumby" src="static/image/thumby1.svg">
+			<img class="thumby" src="static/image/thumby1.svg">
+			<img class="thumby" src="static/image/thumby1.svg">
+			<img class="thumby" src="static/image/thumby1.svg">
+			<img class="thumby" src="static/image/thumby1.svg">
+			<img class="thumby" src="static/image/thumby1.svg">
+			<img class="thumby" src="static/image/thumby1.svg">
+			<img class="thumby" src="static/image/thumby1.svg">
+			<img class="thumby" src="static/image/thumby1.svg">
+			<img class="thumby" src="static/image/thumby1.svg">
+		</div>
+		
+		<div class="quiz-container">
+			<div id="word" class="quiz-header">
+				Q. [강하다] 와 가장 유사한 단어는?
+			</div>
+			<div class="quiz-options">
+				<button id="btnFirst" onClick="solve(0)">든든하다</button>
+				<button id="btnSecond" onClick="solve(1)">깨끗하다</button>
+				<button id="btnThird" onClick="solve(2)">가볍다</button>
+				<button id="btnForth" onClick="solve(3)">늦다</button>
+			</div>
+		</div>
+		
 	</div>
-	<!-- 
+
 	<div id="loading" >
-		<img src="image/block_loading.gif"> now Loading . . .
+		<img class="infinite_rotating_logo" src="static/image/c_green.png"> now Loading . . .
 	</div>
-	 -->
+	
+	<div>
+		
+	</div>
+	 
 	<!-- 문제 리스트를 넘기기 위한 폼, 보이지 않음. 디자인에 반영 X -->
 	<form id="submitForm"
 		action="/WordQuiz3/quiz.nhn?action=commentaryPage" method="POST"
 		style="display: none;">
-		<input name="quizIdList" id="quizList" value=""> <input
-			name="quizFlagList" id="quizFlagList" value="">
+		<input name="quizIdList" id="quizList" value="">
+		<input name="quizFlagList" id="quizFlagList" value="">
 	</form>
 
 	<script>
@@ -77,18 +110,22 @@
 		var quizIdList = [];	// 문제들의 ID 값. 				(문제를 풀 때마다 값이 들어감.)
 		var quizFlagList = []; 	// 문제들의 맞았는지, 틀렸는 여부. (문제를 풀 때마다 값이 들어감.)
 		var solvedCnt = 0; 		// 문제 맞출 때마다 ++
+		var characterImg = [];	// 캐릭터 이미지 리스트
+		var characterImgUrl = ["c_blue.png", "c_green.png", "c_orange.png", "c_pink.png", "c_purple.png", "c_red.png", "c_yellow.png"];
 		
 		var time = 5;			// 타이머 전역변수
+
 
 		
 		setTimeout(() => {
 			alert("게임을 시작합니다.");
-			init(); 				// quizList에 데이터 담기.
-			refresh(0);				// 화면 최초 구성.
+			// 로딩창 삭제해줘야함. 안그러면 클릭이 안됨.
+			var loadingDiv = document.querySelector("#loading");
+			loadingDiv.remove();
+			init(); 					// quizList에 데이터 담기
 		}, 8000);
 		
-		
-		//refresh(0);
+		refresh(0);
 	
 		function refresh(num) 	// 원하는 번호의 문제로 이동.
 		{
@@ -130,20 +167,16 @@
 			// 정답을 맞춘 경우
 			if(num+1 == quizList[round].answer){
 				quizFlagList.push(1);
-				solvedCnt++;
-				alert("정답입니다!");
-				
+				solvedCnt++;				
 			}
 			// 오답인 경우
 			else{
 				quizFlagList.push(0);
-				alert("오답입니다!");
 			}
 			
 			round++;			// 맞췄든 틀렸든, 다음문제로 넘어감.
 			refresh(round);		// 화면 재구성
 		}
-		
 		
 		function init() // 백엔드에서 불러온 정보 초기화. 특별히 건드릴건 없을 듯.
 		{
@@ -158,9 +191,9 @@
 			btnList.push(document.querySelector("#btnThird"));
 			btnList.push(document.querySelector("#btnForth"));
 			
-			// 로딩창 삭제해줘야함. 안그러면 클릭이 안됨.
-			var loadingDiv = document.querySelector("#loading");
-			loadingDiv.remove();
+			// 캐릭터 넣어주기.
+			imgList = document.querySelectorAll(".thumby");
+			imgList.forEach(img => img.setAttribute("src", "static/image/" + characterImgUrl[Math.floor(Math.random() * 7)]));
 			
 			console.log(quizList);
 			console.log(btnList);

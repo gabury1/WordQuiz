@@ -118,6 +118,21 @@ public class UserDao {
 	    }
 	    return null; // 일치하는 사용자가 없으면 null 반환
 	}
+	
+	//우진만든거
+		public boolean isFieldExists(String field, String value) throws SQLException {
+		    String sql = "SELECT COUNT(*) FROM Users WHERE " + field + " = ?";
+		    try (Connection conn = open();
+		         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+		        pstmt.setString(1, value);
+		        try (ResultSet rs = pstmt.executeQuery()) {
+		            if (rs.next()) {
+		                return rs.getInt(1) > 0;
+		            }
+		        }
+		    }
+		    return false;
+		}
 
 
 }
