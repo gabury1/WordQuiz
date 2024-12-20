@@ -1,38 +1,200 @@
 @charset "UTF-8";
-	body {margin : 0;}
-	#loading {
-            z-index: 1000; /* 다른 요소들 위로 쌓임 */
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column; /* flex 방향을 세로로 설정 */
-            font-size: 30px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-			background-color: #1E1E20; /* 반투명 검은색 배경 */
-			animation: fadeOut 5s 2s forwards; /* fadeOut 애니메이션 5초 대기 2초 동안 실행*/
+
+body {
+	margin: 0;
+}
+
+
+
+#loading {
+	z-index: 1000; /* 다른 요소들 위로 쌓임 */
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column; /* flex 방향을 세로로 설정 */
+	font-size: 30px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #1E1E20; /* 반투명 검은색 배경 */
+	animation: fadeOut 5s 2s forwards; /* fadeOut 애니메이션 5초 대기 2초 동안 실행*/
+}
+
+.hidden {
+	display: none;
+}
+
+@keyframes fadeOut {
+	from { 
+		opacity:1; /* 초기 투명도 */
+	}
+	to {
+		opacity: 0; /* 최종 투명도 */
+	}
+}
+
+@keyframes thumby-fall {
+	from {
+		top : 0%;
+	}
+	to {
+		top : 100%;
 	}
 	
-	.hidden{
-		display : none;
-	}
+}
+
+.game-container {
+	width :80vw;
+	height : 100vh;
 	
-	@keyframes fadeOut {
-            from {
-                opacity: 1; /* 초기 투명도 */
-            }
-            to {
-                opacity: 0; /* 최종 투명도 */
-            }
-        }
-        
-    #quizBox {
-    	border-radius: 37px;
-		background: rgba(255, 255, 255, 0.20);
-		backdrop-filter: blur(43.54999923706055px);
-    }
-        
+	display : grid;
+	grid-template-rows   : 15% 80% 5%;
+	grid-template-columns: 75% 25%;
+	align-items   : stretch;
+	
+	margin-left : auto;
+
+}
+
+.quiz-container {
+
+	margin: 50px;
+	padding: 20px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	
+	justify-items : stretch;
+	align-items : end;
+	
+	border-radius: 37px;
+	background: rgba(255, 255, 255, 0.20);
+	backdrop-filter: blur(43.54999923706055px);
+}
+
+
+.timer{
+	display : flex;
+	align-items : flex-end;
+	justify-content : space-between;
+	flex-direction: row;
+}
+
+.progress-bar {
+	height: 12%;
+	width : 95%;
+	background: #98A9FF;
+	margin-bottom : 1%;
+	border-radius: 20.036px;
+	
+}
+
+.timer-img{
+	width  : 3%;
+	height : 25%;
+}
+
+.quiz-header {
+	min-height : 15%;
+	
+	align-items: center;
+	justify-items: center;
+	margin-bottom: 20px;
+}
+
+.thumbys {
+	/* 그리드 병합 */
+	grid-column : 2;
+	grid-row : 1/4;
+	
+	display : flex;
+	flex-direction : column-reverse;
+	
+}
+
+.thumbys :nth-child(odd) {
+	-moz-transform: matrix(-1, 0, 0, 1, 0, 0);
+    -webkit-transform: matrix(-1, 0, 0, 1, 0, 0);
+    transform: matrix(-1, 0, 0, 1, 0, 0);
+}
+
+.thumby {
+	height : 10%;
+	object-fit: contain;
+}
+
+#word {
+	color: #F3F3F3;
+	text-align: center;
+	text-shadow: 0px 4.496px 1.124px rgba(0, 0, 0, 0.25);
+	font-family: Belanosima;
+	font-size: 40px;
+	font-style: normal;
+	font-weight: 700;
+	padding-top : 30px
+}
+
+.icons {
+	display: flex;
+}
+
+.icon {
+	width: 30px;
+	height: 30px;
+	margin-left: 10px;
+}
+
+.quiz-options {
+	min-height : 75%;
+	
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;
+	
+	justify-items : center;
+	align-items : center;
+}
+
+.quiz-options :nth-child(1){place-self : end end;}
+.quiz-options :nth-child(2){place-self : end start;}
+.quiz-options :nth-child(3){place-self : start end;}
+.quiz-options :nth-child(4){place-self : start start;}
+
+
+button {
+	
+	width : 70%;
+	height: 80%;
+	
+	border-radius: 27.845px;
+	background: linear-gradient(180deg, rgba(84, 112, 255, 0.40) 99.99%, rgba(84, 112, 255, 0.20) 100%);
+	box-shadow: 0px 4px 17.5px 0px rgba(0, 0, 0, 0.25);
+	backdrop-filter: blur(22.394712448120117px);
+	border : 0;
+	
+	color: #F3F3F3;
+	text-align: center;
+	text-shadow: 0px 4.967px 1.242px rgba(0, 0, 0, 0.25);
+	font-family: Belanosima;
+	font-size: 55.705px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: 136.593px; /* 193.186% */
+
+}
+
+button:hover {
+	box-shadow : 50px;
+	transform : scale(1.1);
+	cursor : pointer;
+}
+
+.smiley-large {
+	text-align: left;
+}
+
+.smiley-large img {
+	width: 50px;
+	height: 50px;
+}

@@ -187,6 +187,96 @@ public class QuizController extends HttpServlet {
 		return "quiz/mainView.jsp";
 	}
 	
+	//회원가입 -> 우진 만든거
+	public String register(HttpServletRequest request, HttpServletResponse response) {
+	    System.out.println("[DEBUG] register 메서드 진입");
+
+	    UserDto user = new UserDto(); // 사용자 객체 생성
+	    try {
+	        // 입력값을 UserDto 객체로 매핑
+	        BeanUtils.populate(user, request.getParameterMap());
+
+	        // 비밀번호 확인 (비밀번호와 비밀번호 확인 필드 비교)
+	        String password2 = request.getParameter("password2");
+	        if (!user.getPassword().equals(password2)) {
+	            System.out.println("[DEBUG] 비밀번호 불일치");
+	            request.setAttribute("error", "비밀번호가 일치하지 않습니다.");
+	            return "user/registerView.jsp";
+	        }
+
+	        // 회원 정보 저장
+	        UserDao userDao = new UserDao();
+	        userDao.insertUser(user);
+	        System.out.println("[DEBUG] 회원가입 성공: " + user.getId());
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        System.out.println("[ERROR] 회원가입 중 문제 발생");
+	        request.setAttribute("error", "회원가입이 정상적으로 처리되지 않았습니다.");
+	        return "user/registerView.jsp";
+	    }
+
+	    // 회원가입 성공 시 로그인 페이지로 리다이렉트
+	    return "redirect:/quiz.nhn?action=loginPage";
+	}
+	
+
+	//우진만든거
+		public String login(HttpServletRequest request, HttpServletResponse response) {
+		    String id = request.getParameter("id");
+		    String password = request.getParameter("password");
+		    UserDao userDao = new UserDao();
+
+		    try {
+		        UserDto user = userDao.validateUser(id, password); // 사용자 검증
+		        if (user != null) { // 로그인 성공
+		            HttpSession session = request.getSession();
+		            session.setAttribute("user", user); // 세션에 사용자 정보 저장
+		            return "redirect:/quiz.nhn?action=mainPage"; // 메인 페이지로 이동
+		        } else { // 로그인 실패
+		            request.setAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
+		            return "user/loginView.jsp"; // 로그인 페이지로 돌아감
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        request.setAttribute("error", "로그인 처리 중 오류가 발생했습니다.");
+		        return "user/loginView.jsp";
+		    }
+		}
+	//우진만든거.
+
+		public String checkField(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		    String field = request.getParameter("field");
+		    String value = request.getParameter("value");
+		    boolean exists = false;
+
+		    // 입력된 파라미터 값 로그 출력
+		    System.out.println("[DEBUG] field 값: " + field);
+		    System.out.println("[DEBUG] value 값: " + value);
+
+		    if (("id".equals(field) || "nickname".equals(field)) && value != null && !value.isEmpty()) {
+		        try {
+		            UserDao userDao = new UserDao();
+		            exists = userDao.isFieldExists(field, value); // DAO 메서드 호출
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		        }
+		    }
+
+		    // JSON 응답 반환
+		    String jsonResponse = "{\"exists\":" + exists + "}";
+		    System.out.println("[DEBUG] JSON 응답: " + jsonResponse); // JSON 응답 로그 출력
+
+		    response.setContentType("application/json");
+		    response.setCharacterEncoding("UTF-8");
+		    response.getWriter().write(jsonResponse);
+		    
+		    System.out.println("[DEBUG] JSON 응답2: " + jsonResponse);
+
+		    // 서비스 메서드가 호출된 후 오류를 방지하기 위해 빈 문자열 반환
+		   return "";
+		}
+	
 	// 마이페이지
 	public String myPage(HttpServletRequest request, HttpServletResponse response)
 	{
