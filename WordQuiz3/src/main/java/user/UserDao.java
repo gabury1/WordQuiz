@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class UserDao {
 
 	final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-	final String JDBC_URL = "jdbc:mysql://localhost:3306/webdb";//wordquiz";
+	final String JDBC_URL = "jdbc:mysql://localhost:3306/wordquiz";
 
 	// DB 연결을 가져오는 메서드, DBCP를 사용하는 것이 좋음
 	public Connection open() {
@@ -118,6 +118,21 @@ public class UserDao {
 	    }
 	    return null; // 일치하는 사용자가 없으면 null 반환
 	}
+	
+	//우진만든거
+		public boolean isFieldExists(String field, String value) throws SQLException {
+		    String sql = "SELECT COUNT(*) FROM Users WHERE " + field + " = ?";
+		    try (Connection conn = open();
+		         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+		        pstmt.setString(1, value);
+		        try (ResultSet rs = pstmt.executeQuery()) {
+		            if (rs.next()) {
+		                return rs.getInt(1) > 0;
+		            }
+		        }
+		    }
+		    return false;
+		}
 
 
 }
