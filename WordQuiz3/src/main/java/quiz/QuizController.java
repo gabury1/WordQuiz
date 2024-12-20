@@ -1,11 +1,12 @@
 package quiz;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.List;
+
 import org.apache.commons.beanutils.BeanUtils;
+
 import comment.CommentDao;
 import comment.CommentDto;
 import comment.replyDto;
@@ -83,7 +84,7 @@ public class QuizController extends HttpServlet {
 		String view = null;
 		// action 파라미터 없이 접근한 경우
 		if (action == null) {
-			action = "loginPage";
+			action = "myPage";//"loginPage";
 		}
 		try {
 			// 현재 클래스에서 action 이름과 HttpServletRequest 를 파라미터로 하는 메서드 찾음
@@ -191,7 +192,7 @@ public class QuizController extends HttpServlet {
 	public String myPage(HttpServletRequest request, HttpServletResponse response)
 	{
 		HttpSession session = request.getSession(); // 로그인시 세션 만들어서 user_no으로 유저번호 넘겨줘야함
-		int user_no= (int)session.getAttribute("user_no");
+		int user_no= 2;//(int)session.getAttribute("user_no");
 		List<replyDto> list;
 		try {
 			UserDto u = userDao.getUser(user_no);
@@ -216,7 +217,7 @@ public class QuizController extends HttpServlet {
 	// 유저 정보 페이지
 	public String userInfoPage(HttpServletRequest request, HttpServletResponse response)
 	{
-		int target_no = Integer.parseInt(request.getParameter("target_no"));// /quiz.nhn?action=guserInfoPage&user_no=랭킹 유저 번호(링크 형태)
+		int target_no = 2;//Integer.parseInt(request.getParameter("target_no"));// /quiz.nhn?action=guserInfoPage&user_no=랭킹 유저 번호&rank=유저 순위&answer=맞춘문제(링크 형태)
 		List<replyDto> list;
 		try {
 			UserDto u = userDao.getUser(target_no);

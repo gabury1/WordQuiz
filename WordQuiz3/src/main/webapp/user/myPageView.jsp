@@ -6,6 +6,11 @@
 <head>
 <meta charset="UTF-8">
 <title>유저 설정</title>
+
+<!--  css  -->
+<link rel="stylesheet" href="static/css/basic.css">
+<link rel="stylesheet" href="static/css/myPage.css">
+
 <script>
 	function btnClick() {
 	  const mydiv = document.getElementById('my-div');
@@ -20,10 +25,10 @@
 </head>
 <body>
 	<div>
-		<img src="${users.img}">
+	<img src="${users.img}">
 		<div>
-			<p>자기소개: ${users.content}</p>
 			<p>닉네임:${users.nickname}</p>
+			<p>자기소개: ${users.content}</p>
 			<p>ID:${users.id}</p>
 			<p>PW:${users.password}</p>
 			<p>나이:${users.age}</p>
