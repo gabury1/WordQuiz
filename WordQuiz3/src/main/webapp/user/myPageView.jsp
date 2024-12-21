@@ -286,7 +286,7 @@
 <body>
 	<div  class="container">
 		<div class="mypage-wrapper">
-			<div class="profile"><img src="${users.img}" class="profile"></div>
+			<div class="profile"><img src="${users.img}" class="profile" onerror="this.src='static/image/profile1.png'"></div>
 			<p class="nickname">${users.nickname}</p>
 			<div class="status-message-background">
                 <div class="status-message-text">
@@ -344,7 +344,7 @@
 					<c:forEach var="reply" items="${replylist}" varStatus="status">
 						<li class="comment">
 							<div class="comment-header">
-								<img  class="comment-profile" src="${reply.img}">
+								<img  class="comment-profile" src="${reply.img}" onerror="this.src='static/image/profile1.png'">
 								<div class="comment-name">${reply.nickname}</div>
 								<div class="comment-date">${reply.create_at}</div>
 							</div>

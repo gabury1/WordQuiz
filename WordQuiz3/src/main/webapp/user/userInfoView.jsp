@@ -256,7 +256,7 @@
 <body>
 	<div class="main">
 		<div class="profile-box">
-			<img src="${users.img}" id="profile-image" alt="profile-image">
+			<img src="${users.img}" id="profile-image" alt="profile-image" onerror="this.src='static/image/profile1.png'">
 			<div class="profile-name">${users.nickname} </div>
 			<div class="profile-age">${users.age}</div>
 			<div class="status-message">${users.content}</div>
@@ -278,7 +278,7 @@
                 <c:forEach var="reply" items="${replylist}" varStatus="status">
 					<li>
 						<div class="chat-message-header">
-							<img src="${reply.img}" class="profile-pic2">
+							<img src="${reply.img}" class="profile-pic2"  onerror="this.src='static/image/profile1.png'">
 							<div class="profile-name2">${reply.nickname} </div>
 							<div class="profile-time">${reply.create_at}</div>
 						</div>	
