@@ -11,18 +11,12 @@
 <link rel="stylesheet" href="static/css/basic.css">
 <link rel="stylesheet" href="static/css/quizPage.css">
 
+<!-- js -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <style>
 	
-	img.infinite_rotating_logo{
-    animation: rotate_image 10s linear infinite;
-    transform-origin: 50% 50%;
-	}
- 
-	@keyframes rotate_image{
-		100% {
-    	transform: rotate(360deg);
-    	}
-	}
+
 
 </style>
 
@@ -42,42 +36,48 @@
 	
 		<div class="timer">
 			<img class="timer-img" src="static/image/Group.png">
-			<div class="progress-bar"></div>
+			<div class="progress-bar">
+				<div class="myProgress"></div>
+			</div>
 		</div>
 		
 		<div class="thumbys"> 
-			<img class="thumby" src="static/image/thumby1.svg">
-			<img class="thumby" src="static/image/thumby1.svg">
-			<img class="thumby" src="static/image/thumby1.svg">
-			<img class="thumby" src="static/image/thumby1.svg">
-			<img class="thumby" src="static/image/thumby1.svg">
-			<img class="thumby" src="static/image/thumby1.svg">
-			<img class="thumby" src="static/image/thumby1.svg">
-			<img class="thumby" src="static/image/thumby1.svg">
-			<img class="thumby" src="static/image/thumby1.svg">
-			<img class="thumby" src="static/image/thumby1.svg">
+			<img class="thumby rotateThumby" src="static/image/thumby1.svg">
+			<img class="thumby rotateThumby" src="static/image/thumby1.svg">
+			<img class="thumby rotateThumby" src="static/image/thumby1.svg">
+			<img class="thumby rotateThumby" src="static/image/thumby1.svg">
+			<img class="thumby rotateThumby" src="static/image/thumby1.svg">
+			<img class="thumby rotateThumby" src="static/image/thumby1.svg">
+			<img class="thumby rotateThumby" src="static/image/thumby1.svg">
+			<img class="thumby rotateThumby" src="static/image/thumby1.svg">
+			<img class="thumby rotateThumby" src="static/image/thumby1.svg">
+			<img class="thumby rotateThumby" src="static/image/thumby1.svg">
 		</div>
 		
 		<div class="quiz-container">
 			<div id="word" class="quiz-header">
-				Q. [강하다] 와 가장 유사한 단어는?
+				Q. 
 			</div>
 			<div class="quiz-options">
-				<button id="btnFirst" onClick="solve(0)">든든하다</button>
-				<button id="btnSecond" onClick="solve(1)">깨끗하다</button>
-				<button id="btnThird" onClick="solve(2)">가볍다</button>
-				<button id="btnForth" onClick="solve(3)">늦다</button>
+				<button id="btnFirst" onClick="solve(0)"></button>
+				<button id="btnSecond" onClick="solve(1)"></button>
+				<button id="btnThird" onClick="solve(2)"></button>
+				<button id="btnForth" onClick="solve(3)"></button>
 			</div>
 		</div>
 		
 	</div>
-
+	 
 	<div id="loading" >
 		<img class="infinite_rotating_logo" src="static/image/c_green.png"> now Loading . . .
 	</div>
-	
-	<div>
-		
+	 
+	 
+	<div class="screen">
+		<div class="speechBubble">
+				<div class="character"><img  src="static/image/c_green.png"></div>
+				<p class="speech">게임 시작한다! <br> 집중해!</p>
+		</div>
 	</div>
 	 
 	<!-- 문제 리스트를 넘기기 위한 폼, 보이지 않음. 디자인에 반영 X -->
@@ -110,22 +110,25 @@
 		var quizIdList = [];	// 문제들의 ID 값. 				(문제를 풀 때마다 값이 들어감.)
 		var quizFlagList = []; 	// 문제들의 맞았는지, 틀렸는 여부. (문제를 풀 때마다 값이 들어감.)
 		var solvedCnt = 0; 		// 문제 맞출 때마다 ++
-		var characterImg = [];	// 캐릭터 이미지 리스트
+		var imgList = [];	// 캐릭터 이미지 리스트
 		var characterImgUrl = ["c_blue.png", "c_green.png", "c_orange.png", "c_pink.png", "c_purple.png", "c_red.png", "c_yellow.png"];
+		var progress = document.querySelector(".myProgress");	// 프로그레스 바
 		
 		var time = 5;			// 타이머 전역변수
 
 
-		
+		screen_init();
+		init(); 
 		setTimeout(() => {
-			alert("게임을 시작합니다.");
 			// 로딩창 삭제해줘야함. 안그러면 클릭이 안됨.
 			var loadingDiv = document.querySelector("#loading");
 			loadingDiv.remove();
-			init(); 					// quizList에 데이터 담기
-		}, 8000);
+			
+			removeScreen();
+			refresh(0);
+		}, 11000);
+							// quizList에 데이터 담기
 		
-		refresh(0);
 	
 		function refresh(num) 	// 원하는 번호의 문제로 이동.
 		{
@@ -157,13 +160,23 @@
 			countH1.textContent = 5;
 			
 			time = 6;
+			
+			progress.style.width = 100 + "%";
 			setTimer(round);
 			
 		}
 		
 		function solve(num)		// 정답버튼 이벤트 핸들러
 		{
+			imgList.forEach((e) => {
+				e.classList.remove("rotateThumby");
+				void e.offsetWidth;
+				e.classList.add("rotateThumby");
+			});
+			
 			quizIdList.push(quizList[round].id);
+			imgList.shift().remove();
+			
 			// 정답을 맞춘 경우
 			if(num+1 == quizList[round].answer){
 				quizFlagList.push(1);
@@ -194,33 +207,88 @@
 			// 캐릭터 넣어주기.
 			imgList = document.querySelectorAll(".thumby");
 			imgList.forEach(img => img.setAttribute("src", "static/image/" + characterImgUrl[Math.floor(Math.random() * 7)]));
+			imgList = Array.from(imgList);
 			
 			console.log(quizList);
 			console.log(btnList);
+			console.log(imgList);
 		}
 		
 		// 타이머, 5초의 시간제한
 		function setTimer(nowRound)
 		{
-			
-			// 1초마다 재귀반복 0초에서 동작을 멈춤.
-			var countH1 = document.querySelector("#count");
 
 			setTimeout(() => {
 					
-					console.log(nowRound==round);
-					time--;
-					countH1.textContent=time;
+					time -= 0.01;
+					
+					progress.style.width = ((time-1)*20) + "%";
+					console.log(((time-1)*20) + "%");
 					
 					if(nowRound == round)				// 해당 라운드가 아니라면 루프가 돌면 안됨 !!
 					{
 						if(0 < time) setTimer(nowRound);
 						else solve(-1);					// 무조건 틀린 답을 내놓음.
 					}
-				}, 1000);
+				}, 10);
+		}
+		
+		// 스크린 init()
+		function screen_init()
+		{
+			var screen = document.querySelector(".screen");
+			var opt = document.querySelector(".quiz-container");
+			var speechBubble = document.querySelector(".speechBubble");
+			const rect = opt.getBoundingClientRect();
+			var speechRect = speechBubble.getBoundingClientRect();
+
+	        // 두 번째 요소의 크기와 위치를 첫 번째 요소와 동일하게 설정
+	        screen.style.width = rect.width + 'px';
+	        screen.style.height = rect.height + 'px';
+	        screen.style.top = rect.top + 'px';
+	        screen.style.left = (rect.left + 12) + 'px';
+	        
+	        // 캐릭터 세팅
+	        var character = document.querySelector(".character");
+	        var l = speechRect.left;
+	        character.style.left = l + "px";
 			
 		}
-
+		
+		function removeScreen()
+		{
+            // 원본 요소 선택
+            const chara = document.querySelector(".character");
+            const charaTop = window.pageYOffset + chara.getBoundingClientRect().top;
+            const charaLeft = window.pageXOffset + chara.getBoundingClientRect().left;
+            
+            // 요소 복제
+            const copyChara = chara.cloneNode(true); // true는 하위 요소도 복사
+            
+            // 복제된 요소의 ID 변경 (중복 방지)
+            copyChara.id = 'copyChara';
+            
+            copyChara.style.top = charaTop + "px";
+            copyChara.style.left = charaLeft + "px";
+            // 화면에 복제된 요소 추가
+            document.body.appendChild(copyChara);
+            
+            const screen = document.querySelector(".screen");
+            const screenTop = window.pageYOffset + screen.getBoundingClientRect().top;
+            const screenLeft = window.pageXOffset + screen.getBoundingClientRect().left;
+            const screenHeight = screen.getBoundingClientRect().height;
+            const screenWidth = screen.getBoundingClientRect().width;
+            
+            $("#copyChara").animate({
+                    top: (screenTop + (screenHeight*0.7)) + "px" , // 위로부터 150px 아래로 이동
+                    left: (screenLeft-100) + "px"  // 왼쪽으로부터 150px 오른쪽으로 이동
+                }, 1000); // 2초 동안 애니메이션 실행
+            
+            screen.remove();
+			
+		}
+		
+		
 	</script>
 
 </body>
