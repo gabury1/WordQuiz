@@ -101,7 +101,7 @@ public class QuizController extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		if (view.startsWith("redirect:/")	) {
 			// redirect:/ 문자열 이후 경로만 가지고 옴
 			String rview = view.substring("redirect:/".length());
@@ -307,7 +307,7 @@ public class QuizController extends HttpServlet {
 	// 유저 정보 페이지
 	public String userInfoPage(HttpServletRequest request, HttpServletResponse response)
 	{
-		int target_no =Integer.parseInt(request.getParameter("target_no"));// /quiz.nhn?action=guserInfoPage&user_no=랭킹 유저 번호&rank=유저 순위&answer=맞춘문제(링크 형태)
+		int target_no =Integer.parseInt(request.getParameter("target_no"));//quiz.nhn?action=userInfoPage&target_no=랭킹 유저 번호&rank=유저 순위&answer=맞춘문제(링크 형태)
 		List<replyDto> list;
 		try {
 			UserDto u = userDao.getUser(target_no);
