@@ -101,7 +101,7 @@ public class QuizController extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
 		if (view.startsWith("redirect:/")	) {
 			// redirect:/ 문자열 이후 경로만 가지고 옴
 			String rview = view.substring("redirect:/".length());

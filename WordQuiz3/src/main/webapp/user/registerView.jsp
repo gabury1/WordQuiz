@@ -76,6 +76,7 @@
         <br><br>
 
         <button type="submit">회원가입</button>
+       	
     </form>
 </body>
 </html>
