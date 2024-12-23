@@ -23,6 +23,10 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import user.UserDao;
 import user.UserDto;
+import user.RankingDto;// 우진 추가
+import jakarta.servlet.http.HttpSession;//우진추가
+import org.apache.commons.beanutils.BeanUtils; //우진 추가
+
 
 @WebServlet("/quiz.nhn")
 @MultipartConfig(maxFileSize = 1024*1024*2, location= "c:/Temp/img")
@@ -141,7 +145,7 @@ public class QuizController extends HttpServlet {
         	System.out.println(e.getMessage());
         }
         
-        return "redirect:/quiz.nhn?action=quizPage";
+        return "redirect:/quiz.nhn	";
 	}
 	
 	// 해설 페이지
@@ -159,91 +163,101 @@ public class QuizController extends HttpServlet {
 		request.setAttribute("correctCnt", correctCnt);
 		
 		HttpSession session = request.getSession();
-		int userNo = Integer.parseInt(session.getAttribute("userNo").toString()) ;
-		gameLogService.saveGameLog(userNo, correctCnt);
+		int userNo = (int)session.getAttribute("user_no");
 		
 		System.out.println(userNo);
+		gameLogService.saveGameLog(userNo, correctCnt);
 		
 		return "quiz/commentaryView.jsp";
 	}
 	
 	// 로그인 페이지
-	public String loginPage(HttpServletRequest request, HttpServletResponse response)
-	{
-		
-		return "user/loginView.jsp";
-	}
+	   public String loginPage(HttpServletRequest request, HttpServletResponse response) {
+	       return "user/loginView.jsp"; // 로그인 페이지 표시
+	   }
+
 	
-	// 회원가입 페이지
-	public String registerPage(HttpServletRequest request, HttpServletResponse response)
-	{
-		
-		return "user/registerView.jsp";
-	}
-	
-	// 메인페이지
-	public String mainPage(HttpServletRequest request, HttpServletResponse response)
-	{
-		
-		return "quiz/mainView.jsp";
-	}
-	
-	//회원가입 -> 우진 만든거
-	public String register(HttpServletRequest request, HttpServletResponse response) {
-	    System.out.println("[DEBUG] register 메서드 진입");
+	   //회원가입 -> 우진 만든거
+	   public String register(HttpServletRequest request, HttpServletResponse response) {
+	       System.out.println("[DEBUG] register 메서드 진입");
 
-	    UserDto user = new UserDto(); // 사용자 객체 생성
-	    try {
-	        // 입력값을 UserDto 객체로 매핑
-	        BeanUtils.populate(user, request.getParameterMap());
+	       UserDto user = new UserDto(); // 사용자 객체 생성
+	       try {
+	           // 입력값을 UserDto 객체로 매핑
+	           BeanUtils.populate(user, request.getParameterMap());
 
-	        // 비밀번호 확인 (비밀번호와 비밀번호 확인 필드 비교)
-	        String password2 = request.getParameter("password2");
-	        if (!user.getPassword().equals(password2)) {
-	            System.out.println("[DEBUG] 비밀번호 불일치");
-	            request.setAttribute("error", "비밀번호가 일치하지 않습니다.");
-	            return "user/registerView.jsp";
-	        }
+	           // 비밀번호 확인 (비밀번호와 비밀번호 확인 필드 비교)
+	           String password2 = request.getParameter("password2");
+	           if (!user.getPassword().equals(password2)) {
+	               System.out.println("[DEBUG] 비밀번호 불일치");
+	               request.setAttribute("error", "비밀번호가 일치하지 않습니다.");
+	               return "user/registerView.jsp";
+	           }
 
-	        // 회원 정보 저장
-	        UserDao userDao = new UserDao();
-	        userDao.insertUser(user);
-	        System.out.println("[DEBUG] 회원가입 성공: " + user.getId());
+	           // 회원 정보 저장
+	           UserDao userDao = new UserDao();
+	           userDao.insertUser(user);
+	           System.out.println("[DEBUG] 회원가입 성공: " + user.getId());
 
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        System.out.println("[ERROR] 회원가입 중 문제 발생");
-	        request.setAttribute("error", "회원가입이 정상적으로 처리되지 않았습니다.");
-	        return "user/registerView.jsp";
-	    }
+	           // 회원가입 후 세션 초기화 (로그인 상태 유지 방지)
+	           HttpSession session = request.getSession(false);
+	           if (session != null) {
+	               session.invalidate(); // 세션 무효화
+	           }
 
-	    // 회원가입 성공 시 로그인 페이지로 리다이렉트
-	    return "redirect:/quiz.nhn?action=loginPage";
-	}
-	
+	       } catch (Exception e) {
+	           e.printStackTrace();
+	           System.out.println("[ERROR] 회원가입 중 문제 발생");
+	           request.setAttribute("error", "회원가입이 정상적으로 처리되지 않았습니다.");
+	           return "user/registerView.jsp";
+	       }
+
+	       // 회원가입 성공 시 로그인 페이지로 리다이렉트
+	       return "redirect:/quiz.nhn?action=loginPage";
+	   }
 
 	//우진만든거
-		public String login(HttpServletRequest request, HttpServletResponse response) {
-		    String id = request.getParameter("id");
-		    String password = request.getParameter("password");
-		    UserDao userDao = new UserDao();
 
-		    try {
-		        UserDto user = userDao.validateUser(id, password); // 사용자 검증
-		        if (user != null) { // 로그인 성공
-		            HttpSession session = request.getSession();
-		            session.setAttribute("user", user); // 세션에 사용자 정보 저장
-		            return "redirect:/quiz.nhn?action=mainPage"; // 메인 페이지로 이동
-		        } else { // 로그인 실패
-		            request.setAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
-		            return "user/loginView.jsp"; // 로그인 페이지로 돌아감
-		        }
-		    } catch (Exception e) {
-		        e.printStackTrace();
-		        request.setAttribute("error", "로그인 처리 중 오류가 발생했습니다.");
-		        return "user/loginView.jsp";
-		    }
-		}
+	// 회원가입 페이지
+	   public String registerPage(HttpServletRequest request, HttpServletResponse response)
+	   {
+	      
+	      return "user/registerView.jsp";
+	   }
+
+	
+	// 메인페이지
+	 public String mainPage(HttpServletRequest request, HttpServletResponse response) {
+	       HttpSession session = request.getSession(false);
+	       if (session == null || session.getAttribute("user_no") == null) {
+	           return "redirect:/quiz.nhn?action=loginPage"; // 로그인 페이지로 이동
+	       }
+	       return "quiz/mainView.jsp"; // 메인 페이지 표시
+	   }
+
+	//우진만든거
+	   public String login(HttpServletRequest request, HttpServletResponse response) {
+	       String id = request.getParameter("id");
+	       String password = request.getParameter("password");
+	       UserDao userDao = new UserDao();
+
+	       try {
+	           UserDto user = userDao.validateUser(id, password); // 사용자 검증
+	           if (user != null) { // 로그인 성공
+	        	   System.out.println("로그인 성공.");
+	               HttpSession session = request.getSession();
+	               session.setAttribute("user_no", user.getUser_no()); // 세션에 사용자 정보 저장
+	               return "redirect:/quiz.nhn?action=rankingPage"; // 메인 페이지로 이동
+	           } else { // 로그인 실패
+	               request.setAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
+	               return "user/loginView.jsp"; // 로그인 페이지로 돌아감
+	           }
+	       } catch (Exception e) {
+	           e.printStackTrace();
+	           request.setAttribute("error", "로그인 처리 중 오류가 발생했습니다.");
+	           return "user/loginView.jsp";
+	       }
+	   }
 	//우진만든거.
 
 		public String checkField(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -298,11 +312,36 @@ public class QuizController extends HttpServlet {
 	}
 	
 	// 랭킹페이지
-	public String rankingPage(HttpServletRequest request, HttpServletResponse response)
-	{
-		
-		return "user/rankingView.jsp";
-	}
+	 public String rankingPage(HttpServletRequest request, HttpServletResponse response) {
+	       try {
+	           // GameLogService를 사용하여 랭킹 데이터 가져오기
+	           GameLogService gameLogService = new GameLogService();
+	           List<RankingDto> rankings = gameLogService.getRanking();
+	           
+	           HttpSession session = request.getSession();
+	           int user_no=(int)session.getAttribute("user_no");
+	           UserDto u = userDao.getUser(user_no);
+	           request.setAttribute("users", u);
+	           
+	           // 디버깅: rankings 데이터 확인
+	           if (rankings != null && !rankings.isEmpty()) {
+	               for (RankingDto ranking : rankings) {
+	                   System.out.println("Nickname: " + ranking.getNickName());
+	                   System.out.println("Score: " + ranking.getScore());
+	                   System.out.println("Profile Image: " + ranking.getImg());
+	               }
+	           } else {
+	               System.out.println("No rankings available.");
+	           }
+
+	           // JSP로 데이터 전달
+	           request.setAttribute("rankings", rankings);
+	       } catch (Exception e) {
+	           e.printStackTrace();
+	       }
+	       return "user/rankingView.jsp"; // JSP 페이지로 이동
+	   }
+
 	
 	// 유저 정보 페이지
 	public String userInfoPage(HttpServletRequest request, HttpServletResponse response)
@@ -325,7 +364,7 @@ public class QuizController extends HttpServlet {
 		CommentDto c = new CommentDto();
 		HttpSession session = request.getSession(); //세션을 통해 유저 정보 입력
 		int user_no= (int)session.getAttribute("user_no");
-		int target_no = Integer.parseInt(request.getParameter("target_no"));// userInfoPage의 페이지에서 사용하기 때문에 request.getParameter("user_no")의 데이터가 남아있음
+		int target_no =Integer.parseInt(request.getParameter("target_no"));// userInfoPage의 페이지에서 사용하기 때문에 request.getParameter("user_no")의 데이터가 남아있음
 		try {
 			c.setContent(request.getParameter("content"));
 			c.setWriter_no(user_no);
@@ -338,7 +377,7 @@ public class QuizController extends HttpServlet {
 			return userInfoPage(request,response);
 		}
 
-		return "redirect:/quiz.nhn?action=userInfoPage";
+		return "redirect:/quiz.nhn?action=userInfoPage" ;
 	}
 	
 	public String deleteUser(HttpServletRequest request, HttpServletResponse response) {

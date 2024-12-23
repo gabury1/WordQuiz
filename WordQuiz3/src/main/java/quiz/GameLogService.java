@@ -17,7 +17,7 @@ public class GameLogService
 	// 게임 로그를 저장합니다.
 	public String saveGameLog(Integer userNo, Integer score)
 	{
-		gameLogDao.saveLog(userNo, score);
+		gameLogDao.saveLog(score,userNo);
 		
 		return "success";
 	}
