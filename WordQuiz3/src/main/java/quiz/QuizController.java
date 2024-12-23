@@ -21,12 +21,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
+import user.RankingDto;// 우진 추가
 import user.UserDao;
 import user.UserDto;
-import user.RankingDto;// 우진 추가
-import jakarta.servlet.http.HttpSession;//우진추가
-import org.apache.commons.beanutils.BeanUtils; //우진 추가
-
 
 @WebServlet("/quiz.nhn")
 @MultipartConfig(maxFileSize = 1024*1024*2, location= "c:/Temp/img")
@@ -364,7 +361,7 @@ public class QuizController extends HttpServlet {
 		CommentDto c = new CommentDto();
 		HttpSession session = request.getSession(); //세션을 통해 유저 정보 입력
 		int user_no= (int)session.getAttribute("user_no");
-		int target_no =Integer.parseInt(request.getParameter("target_no"));// userInfoPage의 페이지에서 사용하기 때문에 request.getParameter("user_no")의 데이터가 남아있음
+		int target_no = Integer.parseInt(request.getParameter("target_no"));
 		try {
 			c.setContent(request.getParameter("content"));
 			c.setWriter_no(user_no);
@@ -377,7 +374,7 @@ public class QuizController extends HttpServlet {
 			return userInfoPage(request,response);
 		}
 
-		return "redirect:/quiz.nhn?action=userInfoPage" ;
+		return "redirect:/quiz.nhn?action=userInfoPage&target_no="+request.getParameter("target_no")+"&rank="+request.getParameter("rank")+"&answer="+request.getParameter("answer") ;
 	}
 	
 	public String deleteUser(HttpServletRequest request, HttpServletResponse response) {

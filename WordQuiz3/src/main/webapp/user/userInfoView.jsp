@@ -286,7 +286,7 @@
 					</li>
 				</c:forEach>
             </ul>
-            <form method="post" action="/WordQuiz3/quiz.nhn?action=addComments" enctype="multipart/form-data">
+            <form method="post" action="/WordQuiz3/quiz.nhn?action=addComments&target_no=${param.target_no}" enctype="multipart/form-data">
             	<div class="chat-input">
         			<input type="text" name="content" placeholder="상대에게 댓글을 달아주세요💭" id="chat-input">
         			<button type="submit" id="send-button"></button>
